@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Git Cheat Sheet — Custom Sites</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface-raised: #1c2230;
+      --border: #30363d;
+      --text: #e6edf3;
+      --text-dim: #8b949e;
+      --accent: #58a6ff;
+      --accent-glow: rgba(88, 166, 255, 0.15);
+      --green: #3fb950;
+      --green-dim: rgba(63, 185, 80, 0.15);
+      --orange: #d29922;
+      --orange-dim: rgba(210, 153, 34, 0.15);
+      --red: #f85149;
+      --red-dim: rgba(248, 81, 73, 0.15);
+      --purple: #bc8cff;
+      --purple-dim: rgba(188, 140, 255, 0.15);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Outfit', sans-serif;
+      font-weight: 400;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .grain {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 100;
+    }
+
+    .hero {
+      position: relative;
+      padding: 80px 40px 60px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -200px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 600px;
+      height: 600px;
+      background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-label {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid var(--border);
+      padding: 6px 16px;
+      border-radius: 20px;
+      margin-bottom: 24px;
+      background: var(--surface);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--text) 0%, var(--accent) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: var(--text-dim);
+      font-size: 1.1rem;
+      font-weight: 300;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 24px 100px;
+    }
+
+    /* Section Styles */
+    .section {
+      margin-bottom: 48px;
+      animation: fadeUp 0.6s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .section-icon.blue { background: var(--accent-glow); border: 1px solid rgba(88,166,255,0.3); }
+    .section-icon.green { background: var(--green-dim); border: 1px solid rgba(63,185,80,0.3); }
+    .section-icon.orange { background: var(--orange-dim); border: 1px solid rgba(210,153,34,0.3); }
+    .section-icon.red { background: var(--red-dim); border: 1px solid rgba(248,81,73,0.3); }
+    .section-icon.purple { background: var(--purple-dim); border: 1px solid rgba(188,140,255,0.3); }
+
+    .section-header h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+
+    .section-desc {
+      color: var(--text-dim);
+      font-weight: 300;
+      margin-bottom: 20px;
+      font-size: 0.95rem;
+      line-height: 1.7;
+    }
+
+    /* Card Styles */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      transition: border-color 0.2s;
+    }
+
+    .card:hover {
+      border-color: rgba(88, 166, 255, 0.3);
+    }
+
+    .card h3 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: var(--text);
+    }
+
+    .card p {
+      color: var(--text-dim);
+      font-size: 0.88rem;
+      font-weight: 300;
+      margin-bottom: 14px;
+      line-height: 1.6;
+    }
+
+    /* Code Blocks */
+    pre {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+      overflow-x: auto;
+      margin-top: 8px;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: var(--green);
+    }
+
+    .inline-code {
+      background: var(--surface-raised);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 2px 7px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      color: var(--accent);
+    }
+
+    .comment { color: var(--text-dim); }
+    .flag { color: var(--orange); }
+    .string { color: var(--accent); }
+
+    /* Steps */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    .step-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--accent-glow);
+      border: 1px solid rgba(88,166,255,0.3);
+      color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-content strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .step-content span {
+      color: var(--text-dim);
+      font-size: 0.88rem;
+      font-weight: 300;
+    }
+
+    /* Reference Table */
+    .ref-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .ref-table tr {
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+    }
+
+    .ref-table tr:hover {
+      background: var(--surface-raised);
+    }
+
+    .ref-table td {
+      padding: 12px 16px;
+      vertical-align: top;
+    }
+
+    .ref-table td:first-child {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      color: var(--green);
+      white-space: nowrap;
+      width: 45%;
+    }
+
+    .ref-table td:last-child {
+      color: var(--text-dim);
+      font-size: 0.88rem;
+      font-weight: 300;
+    }
+
+    /* Golden Rules */
+    .rules-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .rule {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rule::before {
+      content: attr(data-num);
+      position: absolute;
+      top: -8px;
+      right: 10px;
+      font-size: 4rem;
+      font-weight: 800;
+      color: rgba(88, 166, 255, 0.06);
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .rule strong {
+      display: block;
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--accent);
+    }
+
+    .rule span {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      font-weight: 300;
+      line-height: 1.6;
+    }
+
+    /* gitignore box */
+    .gitignore-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+
+    .gitignore-box h3 {
+      font-size: 0.92rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .gitignore-box p {
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      font-weight: 300;
+      margin-bottom: 12px;
+    }
+
+    /* Branch naming */
+    .branch-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .branch-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid;
+    }
+
+    .branch-tag.feat { color: var(--green); border-color: rgba(63,185,80,0.3); background: var(--green-dim); }
+    .branch-tag.fix { color: var(--orange); border-color: rgba(210,153,34,0.3); background: var(--orange-dim); }
+    .branch-tag.exp { color: var(--purple); border-color: rgba(188,140,255,0.3); background: var(--purple-dim); }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 40px;
+    }
+
+    .footer p {
+      color: var(--text-dim);
+      font-size: 0.82rem;
+      font-weight: 300;
+    }
+
+    .footer span {
+      color: var(--accent);
+    }
+
+    @media (max-width: 640px) {
+      .hero { padding: 60px 20px 40px; }
+      .rules-grid { grid-template-columns: 1fr; }
+      .ref-table td:first-child { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-label">Reference Guide</div>
+  <h1>Git Cheat Sheet</h1>
+  <p>Every command you need to manage your code, from first commit to branching and beyond.</p>
+</div>
+
+<div class="container">
+
+  <!-- REPO SETUP -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon blue">🚀</div>
+      <h2>Setting Up a New Repo</h2>
+    </div>
+    <p class="section-desc">Before you can push code to GitHub, you need to create an empty repo on GitHub and then link your local project folder to it. Don't add a README or .gitignore on GitHub — keep it completely empty.</p>
+
+    <div class="card">
+      <h3>Step-by-step from scratch</h3>
+      <p>Open your terminal in the project folder and run these commands in order:</p>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <strong>git init</strong><br>
+            <span>Turns your folder into a Git repository. Creates a hidden <span class="inline-code">.git</span> folder that tracks everything.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <strong>git remote add origin &lt;url&gt;</strong><br>
+            <span>Links your local repo to the GitHub repo. <span class="inline-code">origin</span> is the nickname for the remote. The URL is copied from your GitHub repo page.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <strong>git add .</strong><br>
+            <span>Stages all your files. The dot means "everything in this folder." This tells Git which files to include in the next commit.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <strong>git commit -m "Initial commit"</strong><br>
+            <span>Saves a snapshot of your staged files with a message describing the change.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-content">
+            <strong>git branch -M main</strong><br>
+            <span>Renames your default branch to <span class="inline-code">main</span>, which is GitHub's standard.</span>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">6</div>
+          <div class="step-content">
+            <strong>git push -u origin main</strong><br>
+            <span>Uploads your commit to GitHub. The <span class="inline-code">-u</span> flag links your local branch to the remote so future pushes only need <span class="inline-code">git push</span>.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="gitignore-box">
+      <h3>.gitignore</h3>
+      <p>Create this file in your project root before your first commit to keep build files and secrets out of your repo:</p>
+      <pre><code>__pycache__/
+*.pyc
+dist/
+build/
+*.spec
+*.exe
+.env</code></pre>
+    </div>
+  </div>
+
+  <!-- EVERYDAY WORKFLOW -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon green">⚡</div>
+      <h2>Everyday Workflow</h2>
+    </div>
+    <p class="section-desc">Every time you make changes to your code, it's just three commands. Write clear commit messages — future you will thank present you.</p>
+    <div class="card">
+      <pre><code><span class="comment"># Stage all changes</span>
+git add .
+
+<span class="comment"># Commit with a descriptive message</span>
+git commit <span class="flag">-m</span> <span class="string">"Added lead export to CSV feature"</span>
+
+<span class="comment"># Push to GitHub</span>
+git push</code></pre>
+    </div>
+  </div>
+
+  <!-- BRANCHES -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon purple">🌿</div>
+      <h2>Branches</h2>
+    </div>
+    <p class="section-desc">Branches let you work on features in isolation. Your <span class="inline-code">main</span> branch stays stable while you build and test on separate branches. When a feature is done, merge it back in.</p>
+
+    <div class="card">
+      <h3>Create &amp; switch to a new branch</h3>
+      <p>The <span class="inline-code">-b</span> flag creates and switches in one command.</p>
+      <pre><code>git checkout <span class="flag">-b</span> <span class="string">feature/your-feature-name</span></code></pre>
+    </div>
+
+    <div class="card">
+      <h3>Push a branch to GitHub (first time)</h3>
+      <p>After this, plain <span class="inline-code">git push</span> works for that branch.</p>
+      <pre><code>git push <span class="flag">-u</span> origin <span class="string">feature/your-feature-name</span></code></pre>
+    </div>
+
+    <div class="card">
+      <h3>Merge a branch into main</h3>
+      <p>Switch to main first, then pull in the feature branch.</p>
+      <pre><code><span class="comment"># Switch to main</span>
+git checkout main
+
+<span class="comment"># Merge the feature</span>
+git merge <span class="string">feature/your-feature-name</span>
+
+<span class="comment"># Push the updated main</span>
+git push</code></pre>
+    </div>
+
+    <div class="card">
+      <h3>Delete a branch</h3>
+      <p>Local and remote are separate — delete both when you're done.</p>
+      <pre><code><span class="comment"># Delete locally</span>
+git branch <span class="flag">-d</span> <span class="string">feature/your-feature-name</span>
+
+<span class="comment"># Delete from GitHub</span>
+git push origin <span class="flag">--delete</span> <span class="string">feature/your-feature-name</span></code></pre>
+    </div>
+
+    <div class="card">
+      <h3>Naming convention</h3>
+      <p>Prefix branches by type so you can tell at a glance what they're for:</p>
+      <div class="branch-tags">
+        <span class="branch-tag feat">feature/lead-export</span>
+        <span class="branch-tag feat">feature/sop-templates</span>
+        <span class="branch-tag fix">fix/converter-crash</span>
+        <span class="branch-tag fix">fix/dashboard-layout</span>
+        <span class="branch-tag exp">experiment/new-ui</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNDOING THINGS -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon orange">↩️</div>
+      <h2>Undoing Things</h2>
+    </div>
+    <p class="section-desc">Made a mistake? Git has several ways to roll back. Pick the right one depending on how far back you need to go.</p>
+
+    <div class="card">
+      <h3>View commit history</h3>
+      <p>See all your commits with their short hashes.</p>
+      <pre><code>git log <span class="flag">--oneline</span></code></pre>
+    </div>
+
+    <div class="card">
+      <h3>Undo last commit (keep files)</h3>
+      <p>Good for "I committed too early." Your code stays as-is but the commit is removed.</p>
+      <pre><code>git reset <span class="flag">--soft</span> HEAD~1</code></pre>
+    </div>
+
+    <div class="card">
+      <h3>Revert a specific commit (safe)</h3>
+      <p>Creates a new commit that undoes the changes. Doesn't erase history.</p>
+      <pre><code>git revert <span class="string">&lt;commit-hash&gt;</span></code></pre>
+    </div>
+
+    <div class="card">
+      <h3>Reset to a specific commit (destructive)</h3>
+      <p>Wipes everything after that commit. Use with caution — there's no undo.</p>
+      <pre><code>git reset <span class="flag">--hard</span> <span class="string">&lt;commit-hash&gt;</span>
+git push <span class="flag">--force</span></code></pre>
+    </div>
+  </div>
+
+  <!-- STASHING -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon red">📦</div>
+      <h2>Stashing</h2>
+    </div>
+    <p class="section-desc">Need to switch branches but have uncommitted changes? Stash them temporarily and come back later.</p>
+    <div class="card">
+      <pre><code><span class="comment"># Save changes temporarily</span>
+git stash
+
+<span class="comment"># Switch branches, do your thing, then come back</span>
+git checkout <span class="string">feature/your-branch</span>
+
+<span class="comment"># Restore stashed changes</span>
+git stash pop</code></pre>
+    </div>
+  </div>
+
+  <!-- QUICK REFERENCE -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon blue">📋</div>
+      <h2>Quick Reference</h2>
+    </div>
+    <div class="card" style="padding: 8px 0;">
+      <table class="ref-table">
+        <tr><td>git init</td><td>Initialise a new repo in the current folder</td></tr>
+        <tr><td>git remote add origin &lt;url&gt;</td><td>Link local repo to GitHub</td></tr>
+        <tr><td>git remote -v</td><td>Show the remote URL (useful for debugging)</td></tr>
+        <tr><td>git remote remove origin</td><td>Remove the remote link</td></tr>
+        <tr><td>git add .</td><td>Stage all changes</td></tr>
+        <tr><td>git commit -m "msg"</td><td>Commit staged changes with a message</td></tr>
+        <tr><td>git push</td><td>Push commits to GitHub</td></tr>
+        <tr><td>git push -u origin &lt;branch&gt;</td><td>Push a branch and set up tracking</td></tr>
+        <tr><td>git checkout &lt;branch&gt;</td><td>Switch to an existing branch</td></tr>
+        <tr><td>git checkout -b &lt;branch&gt;</td><td>Create and switch to a new branch</td></tr>
+        <tr><td>git merge &lt;branch&gt;</td><td>Merge a branch into the current branch</td></tr>
+        <tr><td>git branch -d &lt;branch&gt;</td><td>Delete a local branch</td></tr>
+        <tr><td>git push origin --delete &lt;branch&gt;</td><td>Delete a remote branch from GitHub</td></tr>
+        <tr><td>git log --oneline</td><td>View commit history (short format)</td></tr>
+        <tr><td>git reset --soft HEAD~1</td><td>Undo last commit, keep files</td></tr>
+        <tr><td>git reset --hard &lt;hash&gt;</td><td>Reset to a specific commit (destructive)</td></tr>
+        <tr><td>git revert &lt;hash&gt;</td><td>Safely undo a specific commit</td></tr>
+        <tr><td>git stash</td><td>Temporarily save uncommitted changes</td></tr>
+        <tr><td>git stash pop</td><td>Restore stashed changes</td></tr>
+        <tr><td>git credential-manager github login</td><td>Force a fresh GitHub login</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- GOLDEN RULES -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-icon green">✨</div>
+      <h2>Golden Rules</h2>
+    </div>
+    <div class="rules-grid">
+      <div class="rule" data-num="01">
+        <strong>If it works, commit it</strong>
+        <span>You always want a known good version to revert to when things break.</span>
+      </div>
+      <div class="rule" data-num="02">
+        <strong>Main = always stable</strong>
+        <span>Build features on branches, merge when they're tested and done.</span>
+      </div>
+      <div class="rule" data-num="03">
+        <strong>Write clear commit messages</strong>
+        <span>Future you will thank present you when you need to find where a bug was introduced.</span>
+      </div>
+      <div class="rule" data-num="04">
+        <strong>Build your .exe from main</strong>
+        <span>That way you always know it's the stable, complete version of your app.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <p>Built for <span>Custom Sites</span> · Bookmark this page and keep it handy</p>
+  </div>
+
+</div>
+
+</body>
+</html>
